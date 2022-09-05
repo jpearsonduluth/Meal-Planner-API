@@ -11,10 +11,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IngredientRepo, IngredientRepo>();
 builder.Services.AddScoped<IngredientCategoriesRepo, IngredientCategoriesRepo>();
 
+var env = builder.Environment.EnvironmentName;
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{env}.json", optional: true, reloadOnChange: true);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "DockerDebug") //got to be a better way to do this
 {
     app.UseSwagger();
     app.UseSwaggerUI();
